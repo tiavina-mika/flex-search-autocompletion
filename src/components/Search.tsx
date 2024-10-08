@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { addDataToIndex, searchIndex } from "@/utils/article.utils";
+import { addDataToIndex, searchIndex } from "../utils/article.utils";
 
 export interface Article {
   id: number;
