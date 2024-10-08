@@ -1,8 +1,7 @@
-import { useState, useEffect, ChangeEvent, useMemo } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { addDataToIndex, searchIndex } from "../utils/article.utils";
-// import FlexSearch from "flexsearch";
 
 export interface Article {
   id: number;
@@ -36,32 +35,7 @@ const Search = () => {
     addDataToIndex(articles);
   }, []);
 
-  // const searchIndex = useMemo(() => {
-  //   const index = new FlexSearch.Document({
-  //     document: {
-  //       id: "id",
-  //       index: ["title", "content"], // Fields to index
-  //     },
-  //     language: "fr",
-  //     tokenize: "forward",
-  //     rtl: true,
-  //     optimize: true,
-  //     encoder: "simple",
-  //     threshold: 3, // Fuzziness level (higher means more tolerant to typos)
-  //     resolution: 3, // Adjust the search resolution for better precision
-  //   });
-
-  //   articles.forEach((item) => {
-  //     index.add(item);
-  //   });
-
-  //   return index;
-  // }, [articles]);
-
-  console.log("suggestions", suggestions);
-
-  const handleInputChange = (event: ChangeEvent<{}>, value: string) => {
-    console.log("value", value);
+  const handleInputChange = (_: ChangeEvent<{}>, value: string) => {
     setQuery(value);
     const searchResults = searchIndex(value);
 
