@@ -3,20 +3,21 @@ import leven from "leven";
 import { Article } from "../components/Search";
 import FlexSearch from "flexsearch";
 
+// Create a FlexSearch index
 const index = new FlexSearch.Document({
   document: {
     id: "id",
-    index: ["title", "content"], // Fields to index
-    store: ["id", "title", "content"], // Fields to retrieve in search results
+    index: ["title", "content"], // Fields to index for search
+    store: ["id", "title", "content"], // Fields to retrieve in results
   },
-  language: "fr",
-  tokenize: "forward",
-  // optimize: true,
-  encoder: "simple",
-  threshold: 3, // Fuzzy search tolerance for typos
-  resolution: 5, // Higher resolution for better results
+  language: "fr", // Language support for tokenization
+  tokenize: "forward", // Tokenization for autocompletion
+  encoder: "simple", // Simplified text encoding for search
+  threshold: 3, // Fuzzy search tolerance
+  resolution: 5, // Higher resolution for more accurate results
 });
 
+// Add data to the index
 export const addDataToIndex = (data: Article[]) => {
   data.forEach((item) => {
     index.add(item);

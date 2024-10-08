@@ -10,12 +10,14 @@ import {
 // import leven from "leven"; // For more accurate autocorrection
 import { debounce } from "lodash";
 
+// Define Article interface
 export interface Article {
   id: number;
   title: string;
   content: string;
 }
 
+// Sample data to populate the index
 const articles: Article[] = [
   {
     id: 1,
@@ -39,11 +41,13 @@ const Search = () => {
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Article[]>([]);
 
+   // Populate the FlexSearch index on component mount
   useEffect(() => {
     addDataToIndex(articles);
   }, []);
 
 
+  // Debounced search handler
   const handleDebouncedSearch = useCallback(
     debounce(async (value: string) => {
       let searchResults = await searchIndex(value);
@@ -60,6 +64,7 @@ const Search = () => {
     []
   );
 
+  // Handle search input changes
   const handleSearch = (_: ChangeEvent<{}>, value: string) => {
     setQuery(value);
     handleDebouncedSearch(value);
