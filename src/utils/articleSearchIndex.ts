@@ -1,4 +1,4 @@
-// articleSearchIndex.ts
+// utils/articleSearchIndex.ts
 import leven from "leven";
 import { Article } from "../components/Search";
 import FlexSearch from "flexsearch";
