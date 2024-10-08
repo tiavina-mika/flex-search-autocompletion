@@ -7,7 +7,7 @@ const index = new FlexSearch.Document({
   document: {
     id: "id",
     index: ["title", "content"], // Fields to index
-    store: ["title", "content"], // Fields to retrieve in search results
+    store: ["id", "title", "content"], // Fields to retrieve in search results
   },
   language: "fr",
   tokenize: "forward",
@@ -23,14 +23,17 @@ export const addDataToIndex = (data: Article[]) => {
   });
 };
 
-export const searchIndex = (query: string) => {
+export const searchIndex = async (query: string) => {
   try {
-    return index.search(query, {
+    // BUG: puck does not exists in flexseach types
+    const result = await (index as any).searchAsync(query, {
       index: ["title", "content"],
       suggest: true,
       pluck: "title", // we only need the title
       enrich: true, // enrich the result format
     });
+
+    return result;
   } catch (error) {
     console.error("Error during FlexSearch tokenization:", error);
     return [];
@@ -38,13 +41,9 @@ export const searchIndex = (query: string) => {
 };
 
 export const suggestIndex = (query: string, data: Article[]) => {
-  try {
-    const suggestions = data.filter(
-      (item: Article) => leven(query, item.title) <= 2
-    );
-    return suggestions;
-  } catch (error) {
-    console.error("Error during FlexSearch suggestion:", error);
-    return [];
-  }
+  const suggestions = data.filter((item: Article) => {
+    const maxDistance = item.title.length - leven(query.toLocaleLowerCase(), item.title.toLocaleLowerCase());
+    return maxDistance >= 6;
+  });
+  return suggestions;
 };

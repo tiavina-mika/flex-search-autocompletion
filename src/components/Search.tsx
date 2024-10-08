@@ -34,28 +34,28 @@ const articles: Article[] = [
   },
 ];
 
-const t1 = "How to Use poireaux";
-console.log(
-  "t1: ",
-  leven("poreaux", t1),
-  " - ",
-  t1.length,
-  "=",
-  t1.length - leven("poreaux", t1)
-);
+// const t1 = "How to Use poireaux";
+// console.log(
+//   "t1: ",
+//   leven("poreaux", t1),
+//   " - ",
+//   t1.length,
+//   "=",
+//   t1.length - leven("poreaux", t1)
+// );
 
-const t2 = `
-How to Use poireaux xx ffff Integrating
-FlexSearch into a React app
-`;
-console.log(
-  "t2: ",
-  leven("poreaux", t2),
-  " - ",
-  t2.length,
-  "=",
-  t2.length - leven("poreau", t2)
-);
+// const t2 = `
+// How to Use poireaux xx ffff Integrating
+// FlexSearch into a React app
+// `;
+// console.log(
+//   "t2: ",
+//   leven("poreaux", t2),
+//   " - ",
+//   t2.length,
+//   "=",
+//   t2.length - leven("poreaux", t2)
+// );
 
 // Function to get autocorrected results using Levenshtein distance
 const getLevenshteinCorrections = (query, documents, maxDistance) => {
@@ -98,14 +98,14 @@ const Search = () => {
   // };
 
   const handleDebouncedSearch = useCallback(
-    debounce((value: string) => {
-      const searchResults = searchIndex(value);
+    debounce(async (value: string) => {
+      let searchResults = await searchIndex(value);
+      console.log("searchResults 3", searchResults);
 
       // const r = searchResults
       //   // .filter((r2) => r2.field === "title")
       //   .flatMap((result) => result.result.map((doc) => doc.doc.title));
       // console.log("r", searchResults);
-      const formattedResults = searchResults.map((r) => r.doc);
 
       // Perform autocorrection using Levenshtein distance
       // if (searchResults.length === 0) {
@@ -113,10 +113,13 @@ const Search = () => {
       //   console.log("t", t);
       // }
 
-      const l = suggestIndex(value, articles);
-      console.log("l", l);
+      if (searchResults.length <= 0) {
+        searchResults = suggestIndex(value, articles);
+      } else {
+        searchResults = searchResults.map((r) => r.doc);
+      }
 
-      setSuggestions(formattedResults);
+      setSuggestions(searchResults);
     }, 500),
     []
   );
@@ -126,13 +129,30 @@ const Search = () => {
     handleDebouncedSearch(value);
   };
 
+  // return (
+  //   <div>
+  //     <input
+  //       type="text"
+  //       value={query}
+  //       onChange={handleSearch}
+  //       placeholder="Search documents with autocorrect..."
+  //       style={{ width: "300px", padding: "8px" }}
+  //     />
+  //     <ul>
+  //       {suggestions.map((suggestion, index) => (
+  //         <li key={index}>{suggestion.title}</li>
+  //       ))}
+  //     </ul>
+  //   </div>
+  // );
   return (
     <Autocomplete
       freeSolo
       options={suggestions}
-      getOptionLabel={(option: Article | string) =>
-        typeof option === "string" ? option : option.title
-      }
+      filterOptions={(x) => x}
+      getOptionLabel={(option: Article | string) => {
+        return option === "string" ? option : (option as Article).title;
+      }}
       inputValue={query}
       onInputChange={handleSearch}
       renderInput={(params) => (
