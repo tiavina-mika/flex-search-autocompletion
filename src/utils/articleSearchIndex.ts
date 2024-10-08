@@ -40,6 +40,10 @@ export const searchIndex = async (query: string) => {
   }
 };
 
+/**
+ * Get autocorrected results using Levenshtein distance
+ * e.g: fexsearch => flexsearch
+ */
 export const suggestIndex = (query: string, data: Article[]) => {
   const suggestions = data.filter((item: Article) => {
     const maxDistance = item.title.length - leven(query.toLocaleLowerCase(), item.title.toLocaleLowerCase());
