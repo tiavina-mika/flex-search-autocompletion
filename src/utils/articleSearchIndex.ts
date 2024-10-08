@@ -1,18 +1,6 @@
-// searchIndex.js
-import { Article } from "@/components/Search";
+// articleSearchIndex.ts
+import { Article } from "../components/Search";
 import FlexSearch from "flexsearch";
-
-// const index = new FlexSearch({
-//   encode: "icase",
-//   tokenize: "forward",
-//   threshold: 1,
-//   resolution: 3,
-//   depth: 3,
-//   doc: {
-//     id: "id",
-//     field: ["name", "description"],
-//   },
-// });
 
 const index = new FlexSearch.Document({
   document: {
