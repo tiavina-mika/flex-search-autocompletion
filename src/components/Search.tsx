@@ -6,7 +6,7 @@ import {
   searchIndex,
   suggestIndex,
 } from "../utils/articleSearchIndex";
-import leven from "leven"; // For more accurate autocorrection
+// import leven from "leven"; // For more accurate autocorrection
 import { debounce } from "lodash";
 
 export interface Article {
@@ -18,8 +18,8 @@ export interface Article {
 const articles: Article[] = [
   {
     id: 1,
-    title: "How to Use poireaux",
-    // title: "How to Use FlexSearch",
+    // title: "How to Use poireaux",
+    title: "How to Use FlexSearch",
     content: "A guide on using FlexSearch for document search.",
   },
   {
@@ -34,49 +34,6 @@ const articles: Article[] = [
   },
 ];
 
-// const t1 = "How to Use poireaux";
-// console.log(
-//   "t1: ",
-//   leven("poreaux", t1),
-//   " - ",
-//   t1.length,
-//   "=",
-//   t1.length - leven("poreaux", t1)
-// );
-
-// const t2 = `
-// How to Use poireaux xx ffff Integrating
-// FlexSearch into a React app
-// `;
-// console.log(
-//   "t2: ",
-//   leven("poreaux", t2),
-//   " - ",
-//   t2.length,
-//   "=",
-//   t2.length - leven("poreaux", t2)
-// );
-
-// Function to get autocorrected results using Levenshtein distance
-const getLevenshteinCorrections = (query, documents, maxDistance) => {
-  // return documents
-  // .map((doc) => {
-  //   const distance = leven(query.toLowerCase(), doc.title.toLowerCase());
-  //   return { title: doc.title, distance };
-  // })
-  // .filter((result) => result.distance <= maxDistance) // Filter results based on distance
-  // .sort((a, b) => a.distance - b.distance) // Sort by closest match
-  // .map((result) => result.title); // Return the titles
-
-  return documents
-    .map((doc) => {
-      const distance = leven(query.toLowerCase(), doc.title.toLowerCase());
-      return { title: doc.title, distance };
-    })
-    .sort((a, b) => a.distance - b.distance); // Sort by closest match
-  // .map((result) => result.title); // Return the titles
-};
-
 const Search = () => {
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Article[]>([]);
@@ -85,33 +42,11 @@ const Search = () => {
     addDataToIndex(articles);
   }, []);
 
-  // const getLevenshteinCorrections = (query, documents) => {
-  //   const maxDistance = query.length <= 3 ? 1 : 3; // Tighter correction for shorter queries
-  //   return documents
-  //     .map((doc) => {
-  //       const distance = leven(query.toLowerCase(), doc.title.toLowerCase());
-  //       return { title: doc.title, distance };
-  //     })
-  //     .filter((result) => result.distance <= maxDistance)
-  //     .sort((a, b) => a.distance - b.distance)
-  //     .map((result) => result.title);
-  // };
 
   const handleDebouncedSearch = useCallback(
     debounce(async (value: string) => {
       let searchResults = await searchIndex(value);
-      console.log("searchResults 3", searchResults);
 
-      // const r = searchResults
-      //   // .filter((r2) => r2.field === "title")
-      //   .flatMap((result) => result.result.map((doc) => doc.doc.title));
-      // console.log("r", searchResults);
-
-      // Perform autocorrection using Levenshtein distance
-      // if (searchResults.length === 0) {
-      //   const t = getLevenshteinCorrections(query, articles, 3); // Fetch autocorrected results
-      //   console.log("t", t);
-      // }
 
       if (searchResults.length <= 0) {
         searchResults = suggestIndex(value, articles);
